@@ -23,6 +23,7 @@ void thread_pool::init_pool(){
 }
 
 thread_pool::thread_pool(){
+    threads_num=0;
     std::call_once(thread_pool::init_flag,&thread_pool::init_pool,this);
 }
 
