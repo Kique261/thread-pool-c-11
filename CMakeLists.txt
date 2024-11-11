@@ -11,4 +11,4 @@ add_subdirectory(thread_pool)
 
 add_executable(ThreadPoolExample test.cpp)
 
-target_link_libraries(ThreadPoolExample thread_pool pthread)
+target_link_libraries(ThreadPoolExample thread_pool)
