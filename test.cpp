@@ -1,4 +1,4 @@
-#include "thread_pool/thread_pool.h"
+#include "junior_thread_pool/thread_pool.h"
 #include <fstream>
 
 using namespace std;

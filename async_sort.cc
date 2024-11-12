@@ -1,8 +1,10 @@
-#include<iostream>
-#include<thread>
-#include<bits/stdc++.h>
+#include "junior_thread_pool/thread_pool.h"
+#include <fstream>
+#include <list>
 
 using namespace std;
+
+thread_pool p;
 
 list<int> quick_sort(list<int> ls){
     if(ls.empty()) return ls;
@@ -13,7 +15,7 @@ list<int> quick_sort(list<int> ls){
     list<int> low_part;
     low_part.splice(low_part.end(),ls,ls.begin(),divide);
     list<int> high_part;
-    future<list<int>> low_sort(async(quick_sort,move(low_part)));
+    auto low_sort=p.task_in(quick_sort,move(low_part));
     auto high_sort(quick_sort(move(ls)));
     res.splice(res.end(),high_sort);
     res.splice(res.begin(),low_sort.get());
