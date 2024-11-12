@@ -1,0 +1,3 @@
+C:/Users/21073/source/repos/Kique261/thread-pool-c-11/timer/out/build/x64-Debug/CMakeFiles/timer.dir
+C:/Users/21073/source/repos/Kique261/thread-pool-c-11/timer/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/21073/source/repos/Kique261/thread-pool-c-11/timer/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
