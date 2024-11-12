@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 include_directories(${PROJECT_SOURCE_DIR})
 
 add_subdirectory(thread_pool)
-
+add_subdirectory(timer)
 add_executable(ThreadPoolExample test.cpp)
 
-target_link_libraries(ThreadPoolExample thread_pool)
+target_link_libraries(ThreadPoolExample thread_pool timer)

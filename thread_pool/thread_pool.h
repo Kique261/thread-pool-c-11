@@ -16,7 +16,7 @@ private:
 public:
     thread_pool();
     ~thread_pool();
-    size_t get_threads_num(){return threads_num;};
+    size_t get_threads_num() const {return threads_num;};
     template<class Callable, class... Args>
     auto task_in(Callable&& function, Args&&... args) -> std::future<std::invoke_result_t<Callable, Args...>>;
 };

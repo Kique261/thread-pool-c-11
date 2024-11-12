@@ -8,6 +8,7 @@ void print(){
 }
 
 int add(int x,int y){
+    cout << "hello" << endl;
     return x+y;
 }
 
@@ -15,6 +16,6 @@ int main(){
     thread_pool p;
     ofstream outfile("out.out");
     for(int i=0;i<500;i++){
-        cout<<p.task_in(add,i,i+1).get()<<endl;
+        p.task_in(print);
     }
 }
