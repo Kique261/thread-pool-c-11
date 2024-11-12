@@ -1,15 +1,7 @@
-#include <chrono>
-#include <functional>
-#include <queue>
-#include <thread>
-#include <mutex>
-#include <condition_variable>
-#include <future>
-#include <atomic>
-#include <vector>
+#include "heads.h"
 class Timer {
-	std::chrono::steady_clock::time_point expire_time;//ÆÚ´ýÊ±¼ä
-	std::function<void()> callback;//»Øµ÷º¯Êý
+	std::chrono::steady_clock::time_point expire_time;//ï¿½Ú´ï¿½Ê±ï¿½ï¿½
+	std::function<void()> callback;//ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
 public:
 	Timer(std::chrono::steady_clock::time_point expire_time, std::function<void()> callback)
 		: expire_time(expire_time), callback(callback) {};
