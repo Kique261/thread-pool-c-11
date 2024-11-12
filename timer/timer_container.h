@@ -3,14 +3,20 @@
 
 class TimerContainer {
 public:
+    TimerContainer(const TimerContainer&) = delete;
+    TimerContainer& operator=(const TimerContainer&) = delete;
     static TimerContainer& getInstance() {
         std::call_once(init_flag, &TimerContainer::init);
         return *instance;
     }
 
+    void shutdown(){
+        stop.store(true);
+    }
+
     template<typename Callback, typename... Args>
-    void add_timer(int delay_times, Callback callback, Args&&... args) {
-        auto expire_time = std::chrono::steady_clock::now() + std::chrono::milliseconds(delay_times);
+    void add_timer(int delay_time_ms, Callback callback, Args&&... args) {
+        auto expire_time = std::chrono::steady_clock::now() + std::chrono::milliseconds(delay_time_ms);
         Timer timer(expire_time, std::bind(callback, std::forward<Args>(args)...));
         {
             std::unique_lock<std::mutex> lock(queue_mutex);
@@ -35,6 +41,7 @@ private:
     static TimerContainer* instance;
 
     void work();
+
     static void init() {
         instance = new TimerContainer();
         stop.store(false);
@@ -43,4 +50,3 @@ private:
     TimerContainer();
     ~TimerContainer();
 };
-

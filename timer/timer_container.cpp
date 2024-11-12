@@ -1,4 +1,7 @@
 #include "timer_container.h"
+std::once_flag TimerContainer::init_flag;
+std::atomic<bool> TimerContainer::stop;
+TimerContainer* TimerContainer::instance = nullptr;
 
 
 void TimerContainer::work()
