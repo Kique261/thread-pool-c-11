@@ -25,6 +25,6 @@ int main(){
     t.add_timer(10000,print_cur_time);
     t.add_timer(500,print_cur_time);
     t.add_timer(10,print_cur_time);
-    sleep(10);
+    this_thread::sleep_for(chrono::seconds(12));
     t.shutdown();
 }
