@@ -1,6 +1,11 @@
 #include "thread_pool.h"
 
-void thread_pool::init_pool(){
+#include <threads.h>
+
+std::once_flag thread_pool::init_flag;
+thread_pool* thread_pool::instance = nullptr;
+
+thread_pool::thread_pool(){
     thread_pool::stop=false;
     thread_pool::threads_num=std::thread::hardware_concurrency();
     for(size_t i=0;i<threads_num;++i){
@@ -22,9 +27,13 @@ void thread_pool::init_pool(){
     }
 }
 
-thread_pool::thread_pool(){
-    threads_num=0;
-    std::call_once(thread_pool::init_flag,&thread_pool::init_pool,this);
+void thread_pool::init_pool() {
+    instance = new thread_pool();
+}
+
+thread_pool* thread_pool::getInstance(){
+    call_once(init_flag, &thread_pool::init_pool);
+	return instance;
 }
 
 thread_pool::~thread_pool(){

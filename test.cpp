@@ -22,9 +22,12 @@ int add(int x,int y){
 
 int main(){
     auto& t=TimerContainer::getInstance();
+    auto p = thread_pool::getInstance();
+    p->task_in(print_cur_time);
     t.add_timer(10000,print_cur_time);
     t.add_timer(500,print_cur_time);
     t.add_timer(10,print_cur_time);
     this_thread::sleep_for(chrono::seconds(12));
     t.shutdown();
+    
 }

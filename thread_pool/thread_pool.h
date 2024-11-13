@@ -6,16 +6,20 @@
 
 class thread_pool {
 private:
-    std::once_flag init_flag; // 用于保护初始化
+    static std::once_flag init_flag; // 用于保护初始化
     size_t threads_num;
     std::mutex queue_mutex; // 用于操作任务队列
     std::queue<std::function<void()>> tasks;
     std::vector<std::thread> workers; // 使用 std::thread 而不是 std::jthread
     std::atomic<bool> stop; // 用于析构
-    void init_pool(); // 真正的初始化
-public:
     thread_pool();
     ~thread_pool();
+    static void init_pool(); // 真正的初始化
+    static thread_pool* instance;
+public:
+    thread_pool(const thread_pool&)=delete;
+    thread_pool& operator=(const thread_pool&)=delete;
+    static thread_pool* getInstance();
     size_t get_threads_num() const {return threads_num;};
     template<class Callable, class... Args>
     auto task_in(Callable&& function, Args&&... args) -> std::future<std::invoke_result_t<Callable, Args...>>;
