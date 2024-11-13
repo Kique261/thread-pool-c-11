@@ -1,5 +1,6 @@
 #include "heads.h"
 #include "timer.h"
+#include "thread_pool/thread_pool.h"
 
 class TimerContainer {
 public:
@@ -10,7 +11,7 @@ public:
         return *instance;
     }
 
-    void shutdown(){
+    static void shutdown(){
         stop.store(true);
     }
 
@@ -39,7 +40,7 @@ private:
     static std::atomic<bool> stop;
     std::condition_variable work_notify;
     static TimerContainer* instance;
-
+    static thread_pool* thread_pool_instance;
     void work();
 
     static void init() {

@@ -1,7 +1,9 @@
 #include "timer_container.h"
+#include "thread_pool/thread_pool.h"
 std::once_flag TimerContainer::init_flag;
 std::atomic<bool> TimerContainer::stop;
 TimerContainer* TimerContainer::instance = nullptr;
+thread_pool* TimerContainer::thread_pool_instance = nullptr;
 
 
 void TimerContainer::work()
@@ -32,8 +34,8 @@ void TimerContainer::work()
 TimerContainer::TimerContainer()
 {
 	stop.store(false);
-	instance = nullptr;
-	timer_manager = std::thread(&TimerContainer::work, this);
+	thread_pool_instance=thread_pool::getInstance();
+	thread_pool_instance->task_in(&TimerContainer::work, this);
 
 }
 
