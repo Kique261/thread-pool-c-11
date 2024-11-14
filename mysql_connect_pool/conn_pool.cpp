@@ -14,6 +14,7 @@ Mysql_pool* Mysql_pool::getInstance(){
 
 std::future<bool> Mysql_pool::command_in(std::shared_ptr<Mysql_command> &command)
 {
+    std::cout<<"push!\n";
     if(check(command)){
         std::unique_lock<std::mutex>lock(command_mutex);
         command_queue.push(command);
@@ -21,17 +22,19 @@ std::future<bool> Mysql_pool::command_in(std::shared_ptr<Mysql_command> &command
     }else{
         throw std::runtime_error("illegal input");
     }
-    return command->result.get_future();
+    auto res=command->result.get_future();
+    std::cout<<"return!\n";
+    return res;
 }
 
 Mysql_pool::Mysql_pool(){
-    instance->user="root";
-    instance->sql_password="123456";
-    instance->dbname="web_server";
-    instance->host="127.0.0.1";
-    instance->port=3306;
-    instance->max_conn.store(8);
-    instance->acute_words={"select *","insert","drop"};
+    user="root";
+    sql_password="123456";
+    dbname="web_server";
+    host="127.0.0.1";
+    port=3306;
+    max_conn.store(8);
+    acute_words={"select *","insert","drop"};
     {
         std::unique_lock<std::mutex>lock(conn_mutex);
         for(int i=0;i<max_conn.load();i++){
@@ -48,6 +51,7 @@ Mysql_pool::Mysql_pool(){
             cur_conn++;
         }
     }
+    std::thread(&Mysql_pool::work,this).detach();
 }
 
 Mysql_pool::~Mysql_pool()
@@ -57,7 +61,7 @@ Mysql_pool::~Mysql_pool()
 
 
 MYSQL* Mysql_pool::getConnection() {
-    std::unique_lock<std::mutex> lock(conn_mutex);
+    //std::unique_lock<std::mutex> lock(conn_mutex);
     MYSQL* conn=nullptr;
     if(free_conn){
         conn = conn_pool.front();
@@ -78,15 +82,17 @@ MYSQL* Mysql_pool::getConnection() {
 }
 
 void Mysql_pool::releaseConnection(MYSQL* conn) {
-    std::lock_guard<std::mutex> lock(conn_mutex);
+    //std::lock_guard<std::mutex> lock(conn_mutex);
     conn_pool.push(conn);
     ++free_conn;
     conn_notify.notify_one();
+    std::cout<<"release\n";
 }
 
 void Mysql_pool::work()
 {
     while(true){
+        std::cout<<"working\n";
         std::unique_lock<std::mutex>lock(command_mutex);
         if(stop.load()&&command_queue.empty()) break;
         else if(command_queue.empty()){
@@ -95,7 +101,6 @@ void Mysql_pool::work()
         else{
             auto cur=command_queue.front();
             command_queue.pop();
-            lock.unlock();
             MYSQL* work_conn=getConnection();
             std::string query;
             bool success=false;
@@ -115,13 +120,16 @@ void Mysql_pool::work()
                         }
                         break;
                     case command_type::SELECT:
-                        query = "INSERT INTO account (name, password) VALUES ('" + cur->id + "', '" + cur->password + "')";
+                        query = "SELECT * FROM account WHERE name='" + cur->id + "' AND password='" + cur->password + "'";
                         if(mysql_query(work_conn,query.c_str())){
-                            std::cerr << "SELECT query failed: " << mysql_error(work_conn) << std::endl;
+                            std::cout << "SELECT query failed: " << mysql_error(work_conn) << std::endl;
                         }
                         MYSQL_RES* result = mysql_store_result(work_conn);
-                        if(mysql_num_rows(result)){
-                            success=true;
+                        if(result){
+                            if(mysql_num_rows(result)){
+                                success=true;
+                            }
+                            mysql_free_result(result);
                         }
                         break;
                 }
@@ -134,7 +142,7 @@ void Mysql_pool::work()
 
 void Mysql_pool::shutdown()
 {
-    stop.store(false);
+    stop.store(true);
     command_notify.notify_all();
     delete instance;
 }

@@ -1,30 +1,19 @@
 {
     "tasks": [
         {
-            "type": "cppbuild",
-            "label": "C/C++: gcc 生成活动文件",
-            "command": "/usr/bin/gcc",
-            "args": [
-                "-fdiagnostics-color=always",
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}/${fileBasenameNoExtension}",
-                "-lstdc++",
-                "-std=c++23"
-            ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "problemMatcher": [
-                "$gcc"
+            "type": "cmake",
+            "label": "CMake: Build",
+            "command": "build",
+            "targets": [
+                "all"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "detail": "调试器生成的任务。"
-        }
+            "problemMatcher": [],
+            "detail": "CMake 模板 生成 任务"
+        },
     ],
     "version": "2.0.0"
 }

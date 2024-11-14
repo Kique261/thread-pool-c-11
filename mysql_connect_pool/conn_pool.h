@@ -12,7 +12,7 @@ public:
     std::string id;
     std::string password;
     std::promise<bool> result;
-    Mysql_command(const command_type& type, std::string& id,const std::string& password)
+    Mysql_command(const command_type& type, std::string id,const std::string password)
         :type(type),id(id),password(password){}
     ~Mysql_command()=default;
 };
