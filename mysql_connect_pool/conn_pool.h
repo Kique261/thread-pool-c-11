@@ -36,7 +36,7 @@ private:
     std::string dbname;
     int port;
 
-    std::queue<std::shared_ptr<Mysql_command>&> command_queue;
+    std::queue<std::shared_ptr<Mysql_command>> command_queue;
     std::queue<MYSQL*> conn_pool;
     std::atomic<bool> stop;
 
@@ -47,8 +47,8 @@ private:
     Mysql_pool& operator=(const Mysql_pool& othre)=delete;
     void work();
     void shutdown();
-    bool check(std::shared_ptr<Mysql_command>& command);
-    MYSQL* Mysql_pool::getConnection();
+    bool check(const std::shared_ptr<Mysql_command>& command);
+    MYSQL* getConnection();
     void releaseConnection(MYSQL* conn);
     std::vector<std::string> acute_words;
     std::atomic<int> cur_conn;

@@ -21,7 +21,7 @@ std::future<bool> Mysql_pool::command_in(std::shared_ptr<Mysql_command> &command
     }else{
         throw std::runtime_error("illegal input");
     }
-
+    return command->result.get_future();
 }
 
 Mysql_pool::Mysql_pool(){
@@ -139,7 +139,7 @@ void Mysql_pool::shutdown()
     delete instance;
 }
 
-bool Mysql_pool::check(std::shared_ptr<Mysql_command> &command)
+bool Mysql_pool::check(const std::shared_ptr<Mysql_command> &command)
 {
     return true;
 }
