@@ -7,7 +7,8 @@
 
 using namespace std;
 
-void print_cur_time() {
+void print_cur_time(int id) {
+    cout << "this id is: " << id << endl;
     auto now = chrono::system_clock::now();
     auto now_time_t = chrono::system_clock::to_time_t(now);
     auto now_tm = *localtime(&now_time_t);
@@ -21,13 +22,14 @@ int add(int x,int y){
 }
 
 int main(){
-    auto& t=TimerContainer::getInstance();
+    auto t=TimerContainer::getInstance();
     auto p = thread_pool::getInstance();
-    p->task_in(print_cur_time);
-    t.add_timer(10000,print_cur_time);
-    t.add_timer(500,print_cur_time);
-    t.add_timer(10,print_cur_time);
+    auto timer1 = t->make_timer(3000,print_cur_time,1);
+    t->add_timer(timer1);
+    auto timer2 = t->make_timer(1000, print_cur_time,2);
+    t->add_timer(timer2);
+    t->delete_timer(timer1);
     this_thread::sleep_for(chrono::seconds(12));
-    t.shutdown();
+    t->shutdown();
     
 }

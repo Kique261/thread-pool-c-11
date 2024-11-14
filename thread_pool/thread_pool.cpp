@@ -6,8 +6,8 @@ std::once_flag thread_pool::init_flag;
 thread_pool* thread_pool::instance = nullptr;
 
 thread_pool::thread_pool(){
-    thread_pool::stop=false;
-    thread_pool::threads_num=std::thread::hardware_concurrency();
+    stop=false;
+    threads_num=std::thread::hardware_concurrency();
     for(size_t i=0;i<threads_num;++i){
         thread_pool::workers.emplace_back([this]{
             while(!this->stop.load()){
@@ -36,13 +36,16 @@ thread_pool* thread_pool::getInstance(){
 	return instance;
 }
 
+void thread_pool::shutdown()
+{
+    stop.store(true);
+    delete instance;
+}
+
 thread_pool::~thread_pool(){
-    bool expected=false;
-    if(stop.compare_exchange_weak(expected,true)&&!expected){
-        for(auto& worker:workers){
-            if(worker.joinable()){
-                worker.join();
-            }
+    for(auto& worker:workers){
+        if(worker.joinable()){
+            worker.join();
         }
     }
 }

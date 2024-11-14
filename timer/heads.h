@@ -7,3 +7,5 @@
 #include <future>
 #include <atomic>
 #include <vector>
+
+#include <memory>
