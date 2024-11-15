@@ -14,7 +14,7 @@ Mysql_pool* Mysql_pool::getInstance(){
 
 std::future<bool> Mysql_pool::command_in(std::shared_ptr<Mysql_command> &command)
 {
-    std::cout<<"push!\n";
+    //std::cout<<"push!\n";
     if(check(command)){
         std::unique_lock<std::mutex>lock(command_mutex);
         command_queue.push(command);
@@ -24,7 +24,7 @@ std::future<bool> Mysql_pool::command_in(std::shared_ptr<Mysql_command> &command
         throw std::runtime_error("illegal input");
     }
     auto res=command->result.get_future();
-    std::cout<<"return!\n";
+    //std::cout<<"return!\n";
     return res;
 }
 
@@ -102,9 +102,9 @@ void Mysql_pool::work()
         else{
             auto cur=command_queue.front();
             command_queue.pop();
-            std::cout<<"before unlock\n";
+            //std::cout<<"before unlock\n";
             lock.unlock();
-            std::cout<<"after unlock\n";
+            //std::cout<<"after unlock\n";
             MYSQL* work_conn=getConnection();
             std::string query;
             if(work_conn){

@@ -9,7 +9,8 @@
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c23",
             "cppStandard": "gnu++23",
-            "intelliSenseMode": "linux-gcc-x64"
+            "intelliSenseMode": "linux-gcc-x64",
+            "configurationProvider": "ms-vscode.cmake-tools"
         },
         {
             "name": "Windows",
