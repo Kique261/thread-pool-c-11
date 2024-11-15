@@ -18,7 +18,8 @@ std::future<bool> Mysql_pool::command_in(std::shared_ptr<Mysql_command> &command
     if(check(command)){
         std::unique_lock<std::mutex>lock(command_mutex);
         command_queue.push(command);
-        conn_notify.notify_all();
+        lock.unlock();
+        command_notify.notify_all();
     }else{
         throw std::runtime_error("illegal input");
     }
@@ -61,7 +62,7 @@ Mysql_pool::~Mysql_pool()
 
 
 MYSQL* Mysql_pool::getConnection() {
-    //std::unique_lock<std::mutex> lock(conn_mutex);
+    std::unique_lock<std::mutex> lock(conn_mutex);
     MYSQL* conn=nullptr;
     if(free_conn){
         conn = conn_pool.front();
@@ -82,25 +83,28 @@ MYSQL* Mysql_pool::getConnection() {
 }
 
 void Mysql_pool::releaseConnection(MYSQL* conn) {
-    //std::lock_guard<std::mutex> lock(conn_mutex);
-    conn_pool.push(conn);
+    {
+        std::lock_guard<std::mutex> lock(conn_mutex);
+        conn_pool.push(conn);
+    }
     ++free_conn;
-    conn_notify.notify_one();
     std::cout<<"release\n";
 }
 
 void Mysql_pool::work()
 {
-    while(true){
-        std::cout<<"working\n";
+    while(!stop){
+        //std::this_thread::sleep_for(std::chrono::microseconds(200));
         std::unique_lock<std::mutex>lock(command_mutex);
-        if(stop.load()&&command_queue.empty()) break;
-        else if(command_queue.empty()){
+        if(command_queue.empty()){
             command_notify.wait(lock);
         }
         else{
             auto cur=command_queue.front();
             command_queue.pop();
+            std::cout<<"before unlock\n";
+            lock.unlock();
+            std::cout<<"after unlock\n";
             MYSQL* work_conn=getConnection();
             std::string query;
             bool success=false;

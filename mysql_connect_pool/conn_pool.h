@@ -27,7 +27,6 @@ private:
     static std::once_flag init_flag;
     std::mutex command_mutex;
     std::mutex conn_mutex;
-    std::condition_variable conn_notify;
     std::condition_variable command_notify;
 
     std::string host;

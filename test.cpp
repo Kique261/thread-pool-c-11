@@ -21,21 +21,22 @@ void print_cur_time(int id) {
     cout << put_time(&now_tm, "%Y-%m-%d %H:%M:%S")
          << '.' << setfill('0') << setw(3) << now_ms.count() << endl;
 }
-void add(Mysql_pool* instance){
+void add(Mysql_pool* instance,int i){
     auto command=make_shared<Mysql_command>(command_type::INSERT,"jyx","123456");
     auto result=instance->command_in(command);
     cout<<(result.get()==1?"success":"failed")<<endl;
+    cout<<i<<endl;
 }
 
 
 int main(){
-    auto t=TimerContainer::getInstance();
-    auto p = thread_pool::getInstance();
+    //auto t=TimerContainer::getInstance();
+    //auto p = thread_pool::getInstance();
     auto sp= Mysql_pool::getInstance();
-    for(int i=0;i<50;i++){
-        add(sp);
+    for(int i=0;i<500;i++){
+        add(sp,i);
     }
     this_thread::sleep_for(chrono::seconds(5));
-    t->shutdown();
+    //t->shutdown();
     
 }
