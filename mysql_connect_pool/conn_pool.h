@@ -21,6 +21,7 @@ class Mysql_pool{
 public:
     static Mysql_pool* getInstance();
     std::future<bool> command_in(std::shared_ptr<Mysql_command>& command);
+    void shutdown();
 
 private:
     static Mysql_pool* instance;
@@ -45,7 +46,6 @@ private:
     Mysql_pool(const Mysql_pool& other)=delete;
     Mysql_pool& operator=(const Mysql_pool& othre)=delete;
     void work();
-    void shutdown();
     bool check(const std::shared_ptr<Mysql_command>& command);
     MYSQL* getConnection();
     void releaseConnection(MYSQL* conn);

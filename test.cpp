@@ -22,7 +22,7 @@ void print_cur_time(int id) {
          << '.' << setfill('0') << setw(3) << now_ms.count() << endl;
 }
 void add(Mysql_pool* instance,int i){
-    auto command=make_shared<Mysql_command>(command_type::INSERT,"jyx","123456");
+    auto command=make_shared<Mysql_command>(command_type::SELECT,"jyx","123456");
     auto result=instance->command_in(command);
     cout<<(result.get()==1?"success":"failed")<<endl;
     cout<<i<<endl;
@@ -36,6 +36,7 @@ int main(){
     for(int i=0;i<500;i++){
         add(sp,i);
     }
+    sp->shutdown();
     this_thread::sleep_for(chrono::seconds(5));
     //t->shutdown();
     

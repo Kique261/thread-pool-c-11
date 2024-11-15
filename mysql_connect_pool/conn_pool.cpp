@@ -57,7 +57,7 @@ Mysql_pool::Mysql_pool(){
 
 Mysql_pool::~Mysql_pool()
 {
-    std::cout<<"delete succeed!\n";
+    //std::cout<<"delete succeed!\n";
 }
 
 
@@ -88,7 +88,7 @@ void Mysql_pool::releaseConnection(MYSQL* conn) {
         conn_pool.push(conn);
     }
     ++free_conn;
-    std::cout<<"release\n";
+    //std::cout<<"release\n";
 }
 
 void Mysql_pool::work()
@@ -148,6 +148,7 @@ void Mysql_pool::shutdown()
 {
     stop.store(true);
     command_notify.notify_all();
+    //std::cout<<"shutdown!\n";
     delete instance;
 }
 
