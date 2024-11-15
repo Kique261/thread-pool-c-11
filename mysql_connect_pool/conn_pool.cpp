@@ -48,8 +48,8 @@ Mysql_pool::Mysql_pool(){
                 throw std::runtime_error("Mysql_conn init default! Can't get real conn.");
             }
             conn_pool.push(conn);
-            free_conn++;
-            cur_conn++;
+            ++free_conn;
+            ++cur_conn;
         }
     }
     std::thread(&Mysql_pool::work,this).detach();
@@ -67,7 +67,7 @@ MYSQL* Mysql_pool::getConnection() {
     if(free_conn){
         conn = conn_pool.front();
         conn_pool.pop();
-        free_conn--;
+        --free_conn;
     }else{
         conn=mysql_init(nullptr);
         if(conn==nullptr){
@@ -77,7 +77,7 @@ MYSQL* Mysql_pool::getConnection() {
         if(conn==nullptr){
             throw std::runtime_error("Mysql_conn init default! Can't get real conn.");
         }
-        max_conn++;
+        ++max_conn;
     }
     return  conn;
 }
@@ -107,8 +107,8 @@ void Mysql_pool::work()
             std::cout<<"after unlock\n";
             MYSQL* work_conn=getConnection();
             std::string query;
-            bool success=false;
             if(work_conn){
+                bool success = false;
                 switch (cur->type)
                 {
                     case command_type::INSERT:
