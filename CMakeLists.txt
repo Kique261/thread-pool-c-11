@@ -10,10 +10,17 @@ set(CMAKE_BUILD_TYPE Debug)
 
 include_directories(${PROJECT_SOURCE_DIR})
 
+# 添加 libc6-dev 的头文件目录
+include_directories(/usr/include)
+
+# 添加 libc6-dev 的库文件目录
+link_directories(/usr/lib)
+
 add_subdirectory(thread_pool)
 add_subdirectory(timer)
 add_subdirectory(mysql_connect_pool)
 add_subdirectory(IOsystem)
+add_subdirectory(log)
 
 # 使用 pkg-config 查找 MySQL 库
 find_package(PkgConfig REQUIRED)
@@ -28,4 +35,5 @@ target_link_libraries(ThreadPoolExample
                       thread_pool timer
                       mysql_connect_pool
                       IOsystem
+                      log
                       ${MYSQL_LIBRARIES})
