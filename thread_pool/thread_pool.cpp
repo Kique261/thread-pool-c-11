@@ -9,10 +9,10 @@ thread_pool::thread_pool(){
     stop=false;
     threads_num=std::thread::hardware_concurrency();
     for(size_t i=0;i<threads_num;++i){
-        thread_pool::workers.emplace_back([this]{
+        workers.emplace_back([this]{
             while(!this->stop.load()){
-                std::function<void()>task;
                 {
+                    std::function<void()>task;
                     std::unique_lock<std::mutex>lock(this->queue_mutex);
                     if(!this->tasks.empty()){
                         task=std::move(this->tasks.front());

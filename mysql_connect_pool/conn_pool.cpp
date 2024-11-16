@@ -12,7 +12,7 @@ Mysql_pool* Mysql_pool::getInstance(){
     return instance;
 }
 
-std::future<bool> Mysql_pool::command_in(std::shared_ptr<Mysql_command> &command)
+std::future<bool> Mysql_pool::command_in(const std::shared_ptr<Mysql_command> command)
 {
     std::cout<<"push!\n";
     if(check(command)){
@@ -93,6 +93,7 @@ void Mysql_pool::work()
 {
     while(true){
         std::cout<<"working\n";
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         std::unique_lock<std::mutex>lock(command_mutex);
         if(stop.load()&&command_queue.empty()) break;
         else if(command_queue.empty()){

@@ -29,8 +29,8 @@ void add(Mysql_pool* instance){
 
 
 int main(){
-    auto t=TimerContainer::getInstance();
-    auto p = thread_pool::getInstance();
+    //auto t=TimerContainer::getInstance();
+    //auto p = thread_pool::getInstance();
     auto sp= Mysql_pool::getInstance();
     for(int i=0;i<50;i++){
         add(sp);
