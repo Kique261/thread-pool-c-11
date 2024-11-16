@@ -3,3 +3,4 @@
 CMakeSettings.json
 /.vs/
 /timer/build/
+/.vscode/
