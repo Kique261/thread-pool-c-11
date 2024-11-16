@@ -12,7 +12,7 @@ public:
     std::string id;
     std::string password;
     std::promise<bool> result;
-    Mysql_command(const command_type& type, const std::string id, const std::string password)
+    Mysql_command(const command_type& type, std::string id,const std::string password)
         :type(type),id(id),password(password){}
     ~Mysql_command()=default;
 };
@@ -43,6 +43,8 @@ private:
     static void init();
     Mysql_pool();
     ~Mysql_pool();
+    Mysql_pool(const Mysql_pool& other)=delete;
+    Mysql_pool& operator=(const Mysql_pool& othre)=delete;
     void work();
     bool check(const std::shared_ptr<Mysql_command>& command);
     MYSQL* getConnection();

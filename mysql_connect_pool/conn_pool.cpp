@@ -12,7 +12,7 @@ Mysql_pool* Mysql_pool::getInstance(){
     return instance;
 }
 
-std::future<bool> Mysql_pool::command_in(const std::shared_ptr<Mysql_command> command)
+std::future<bool> Mysql_pool::command_in(std::shared_ptr<Mysql_command> &command)
 {
     //std::cout<<"push!\n";
     if(check(command)){
