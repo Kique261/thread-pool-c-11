@@ -53,6 +53,7 @@ Mysql_pool::Mysql_pool(){
         }
     }
     std::thread(&Mysql_pool::work,this).detach();
+    //std::thread(&Mysql_pool::work,this).detach();
 }
 
 Mysql_pool::~Mysql_pool()

@@ -48,20 +48,20 @@ void make_listen(const char* ip,int port){
 int main(){
     // auto t=TimerContainer::getInstance();
      auto p = thread_pool::getInstance();
-    // auto sp= Mysql_pool::getInstance();
-    // vector<thread> threads;
-    // for(int i=0;i<500;i++){
-    //     threads.emplace_back(add,sp,i);
-    // }
-    // for (auto& th : threads) {
-    //     if (th.joinable()) {
-    //         th.join();
-    //     }
-    // }
-    //sp->shutdown();
-    //this_thread::sleep_for(chrono::seconds(5));
+    auto sp= Mysql_pool::getInstance();
+    vector<thread> threads;
+    for(int i=0;i<500;i++){
+        threads.emplace_back(add,sp,i);
+    }
+    for (auto& th : threads) {
+        if (th.joinable()) {
+            th.join();
+        }
+    }
+    sp->shutdown();
+    this_thread::sleep_for(chrono::seconds(5));
     //t->shutdown();
-    const char* ip="127.0.0.1";
-    p->task_in(make_listen,ip,8080);
+    //const char* ip="127.0.0.1";
+    //p->task_in(make_listen,ip,8080);
     
 }
